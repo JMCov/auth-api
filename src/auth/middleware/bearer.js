@@ -1,6 +1,6 @@
 'use strict';
 
-const { users } = require('../models')
+const { users } = require('../../models');
 
 module.exports = async (req, res, next) => {
 
@@ -19,6 +19,6 @@ module.exports = async (req, res, next) => {
   }
 
   function _authError() {
-    next('Invalid Login');
+    next('Invalid Login at bearer');
   }
 }
