@@ -1,40 +1,39 @@
 'use strict';
 
-const { app } = require('../src/server');
-const { db, users } = require('../src/models/index');
+const { server } = require('../src/server');
+const { db } = require('../src/models/index');
 const supertest = require('supertest');
-const request = supertest(app);
+const request = supertest(server);
 
-let testWriter;
 beforeAll(async () => {
-  db.sync();
-  console.log('Hellooooooooo', users);
-  testWriter = await users.create({
-    username: 'writer',
-    password: 'pass123',
-    role: 'writer',
-  });
+  await db.sync();
 });
 
 afterAll(async () => {
-  db.drop();
+  await db.drop();
 });
 
+
 describe('ACL Integration', () => {
-  it('allows read access', async () => {
-    let response = await request.get('/api/v2/food').set('Authorization', `Bearer ${testWriter.token}`);
 
-    console.log('------------------ from read', testWriter);
 
-    expect(response.status).toEqual(200);
-  
+  it('it allows a user to sign up', async () => {
+    let response = await request.post('/signup').send({
+      username: 'test',
+      password: 'pass123',
+      role: 'admin',
+    });
+
+    expect(response.status).toEqual(201);
+    expect(response.body.user.username).toEqual('test');
   });
 
-  it('allows create access', async () => {
-    let response = await request.post('/create').set('Authorization', `Bearer ${testWriter.token}`);
+
+  it('it allows a user to sign in', async () => {
+    let response = await request.post('/signin').auth('test', 'pass123');
 
     expect(response.status).toEqual(200);
-    expect(response.text).toEqual('You have create permission');
+    expect(response.body.user.username).toEqual('test');
   });
 
 

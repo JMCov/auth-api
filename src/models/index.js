@@ -7,7 +7,7 @@ const Collection = require('./data-collection.js');
 const userModel = require('../auth/models/users');
 
 // const DATABASE_URL = process.env.DATABASE_URL || 'sqlite:memory:';
-const DATABASE_URL = process.env.NODE_ENV === 'test' ? 'sqlite:memory:' : process.env.DATABASE_URL;
+const DATABASE_URL = process.env.NODE_ENV === 'test' ? 'sqlite::memory:' : process.env.DATABASE_URL;
 
 
 const sequelize = new Sequelize(DATABASE_URL);
